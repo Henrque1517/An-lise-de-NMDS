@@ -1,0 +1,71 @@
+---
+title: "Analise de NMDS"
+author: "Luiz Henrique"
+date: "2023-11-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+install.packages("here")
+library(here)
+library(vegan)
+
+```
+
+```{r}
+ictio <- read.csv2(here("data", "Ictio.csv"),h=T,sep = ";",check.names=F)
+
+Ictio.env <- read.csv2(here("data", "Ictio_env.csv"),h=T,sep = ";",check.names=F)
+
+
+ictio.envi<-Ictio.env[, 1:4]
+
+ictio.abund<-ictio[,5:17]
+```
+
+existe outros como bray curtis para abundancia ou manhatan
+
+```{r}
+NMDS <- metaMDS(ictio.abund, distance = "bray")
+```
+
+```{r}
+NMDS$stress
+
+```
+
+
+PERMANOVA 
+```{r}
+adonis2(ictio.abund ~ Ictio.env$Ambiente, data = ictio.envi, by=NULL)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+plot(NMDS, type = "p")
+```
+```{r}
+plot(NMDS$points, main = "Composição das especies")
+
+ordispider(NMDS, groups = Ictio.env$Ambiente, label = F)
+
+```
+
+
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
